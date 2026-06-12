@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Bootstrap Form Validation logic
+    // Bootstrap Form Validation logic & Progress Simulation
     const forms = document.querySelectorAll('.needs-validation');
     
     Array.from(forms).forEach(form => {
@@ -83,9 +83,54 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!form.checkValidity()) {
                 event.preventDefault();
                 event.stopPropagation();
+                form.classList.add('was-validated');
+            } else {
+                // If the form is valid and it's the prediction form, simulate processing
+                if (form.getAttribute('action') === '/predict' || form.getAttribute('action').includes('predict')) {
+                    event.preventDefault(); // Prevent immediate submission
+                    
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    
+                    // Fix the width to prevent the button from resizing during animation
+                    const btnWidth = submitBtn.offsetWidth;
+                    submitBtn.style.width = `${btnWidth}px`;
+                    submitBtn.classList.add('btn-progress-container');
+                    submitBtn.disabled = true; // Prevent double-clicks
+                    
+                    let progress = 0;
+                    submitBtn.innerHTML = `
+                        <div class="btn-progress-bar" id="btnProgressBar"></div>
+                        <span class="btn-progress-text" id="btnProgressText">Processing... 0%</span>
+                    `;
+                    
+                    const progressBar = document.getElementById('btnProgressBar');
+                    const progressText = document.getElementById('btnProgressText');
+                    
+                    const interval = setInterval(() => {
+                        progress += 1;
+                        progressBar.style.width = `${progress}%`;
+                        progressText.textContent = `Processing... ${progress}%`;
+                        
+                        if (progress >= 100) {
+                            clearInterval(interval);
+                            progressText.innerHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-check-circle-fill me-2" viewBox="0 0 16 16" style="margin-top: -3px;">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                                </svg>
+                                Complete!
+                            `;
+                            progressBar.style.backgroundColor = 'rgba(25, 135, 84, 0.8)'; // Success green background
+                            
+                            // Submit the form after a brief pause
+                            setTimeout(() => {
+                                HTMLFormElement.prototype.submit.call(form);
+                            }, 500);
+                        }
+                    }, 30); // 30ms * 100 = 3000ms (3 seconds)
+                } else {
+                    form.classList.add('was-validated');
+                }
             }
-            
-            form.classList.add('was-validated');
         }, false);
     });
 });
