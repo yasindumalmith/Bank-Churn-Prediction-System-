@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Bank Churn Prediction System{% endblock %}
+
+{% block content %}
+<div class="hero-section d-flex align-items-center" style="overflow-x: hidden;">
+    <div class="container py-5">
+        <div class="row align-items-center justify-content-center">
+            <!-- Left Content -->
+            <div id="hero-content" class="col-lg-10 text-center transition-col">
+                <h1 class="display-4 fw-bold mb-4 hero-title">
+                    Predict Customer Churn <br/> <span class="text-gradient">Before It Happens</span>
+                </h1>
+                <p id="hero-desc" class="lead mb-5 hero-description mx-auto">
+                    AI-powered banking analytics platform that predicts customer churn risk and provides actionable retention recommendations.
+                </p>
+                <div id="hero-buttons" class="d-flex justify-content-center gap-3">
+                    <a href="#" class="btn btn-primary btn-lg btn-gradient px-4 py-3 rounded-pill shadow-sm fw-semibold">Start Prediction</a>
+                    <a href="#" id="learn-more-btn" class="btn btn-outline-dark btn-lg px-4 py-3 rounded-pill fw-semibold btn-hover-elevate">Learn More</a>
+                </div>
+            </div>
+            
+            <!-- Right Content (Why It Matters Card) -->
+            <div id="why-matters-container" class="col-lg-5 transition-col d-none opacity-0">
+                <div class="glass-card p-5 rounded-4 shadow-lg position-relative overflow-hidden">
+                    <button type="button" id="close-card-btn" class="btn-close position-absolute top-0 end-0 m-4" aria-label="Close" style="z-index: 10;"></button>
+                    <div class="glass-card-accent"></div>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="icon-circle bg-white text-primary me-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 54px; height: 54px; color: #667eea !important;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 16 16">
+                                <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a1.964 1.964 0 0 0-.453-.618A5.984 5.984 0 0 1 2 6zm6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1z"/>
+                            </svg>
+                        </div>
+                        <h3 class="h4 fw-bold mb-0 text-dark">Why This Matters</h3>
+                    </div>
+                    <p class="text-secondary mb-4 lh-lg" style="font-size: 1.05rem;">
+                        Customer retention is critical for banking institutions. Losing valuable customers reduces revenue and increases acquisition costs.
+                    </p>
+                    <div class="p-3 bg-white rounded-3 shadow-sm border border-light">
+                        <p class="mb-0 lh-base fw-medium text-dark" style="font-size: 0.95rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill text-success me-2" viewBox="0 0 16 16" style="margin-top: -3px;">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                            </svg>
+                            Our machine learning system helps identify high-risk customers <span class="fw-bold" style="color: #667eea;">before they leave.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
