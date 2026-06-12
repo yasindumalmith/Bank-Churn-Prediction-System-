@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}Predict Churn - Bank Churn Prediction System{% endblock %}
+
+{% block content %}
+<div class="hero-section py-5" style="min-height: calc(100vh - 140px);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold mb-3">Predict <span class="text-gradient">Churn Risk</span></h2>
+                    <p class="lead text-secondary">Enter the customer's details below to evaluate their likelihood of leaving the bank.</p>
+                </div>
+
+                <form class="needs-validation" novalidate method="POST" action="{{ url_for('predict') }}">
+                    
+                    <!-- Section 1: Customer Information -->
+                    <div class="glass-card p-4 p-md-5 rounded-4 shadow-sm mb-4 position-relative overflow-hidden">
+                        <div class="glass-card-accent"></div>
+                        <h4 class="fw-bold mb-4 text-dark d-flex align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-badge text-primary me-2" viewBox="0 0 16 16">
+                              <path d="M6.5 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                              <path d="M4.5 0A2.5 2.5 0 0 0 2 2.5V14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2.5A2.5 2.5 0 0 0 11.5 0h-7zM3 2.5A1.5 1.5 0 0 1 4.5 1h7A1.5 1.5 0 0 1 13 2.5v10.795a4.2 4.2 0 0 0-.776-.492C11.392 12.387 10.063 12 8 12s-3.392.387-4.224.803a4.2 4.2 0 0 0-.776.492V2.5z"/>
+                            </svg>
+                            Customer Information
+                        </h4>
+                        
+                        <div class="row g-4">
+                            <div class="col-md-12">
+                                <label for="ageInput" class="form-label fw-semibold">Age: <span id="ageValue" class="text-primary fw-bold fs-5 ms-2">40</span></label>
+                                <input type="range" class="form-range" min="18" max="100" value="40" id="ageInput" name="age" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="genderSelect" class="form-label fw-semibold">Gender</label>
+                                <select class="form-select form-select-lg" id="genderSelect" name="gender" required>
+                                    <option value="" selected disabled>Select gender...</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a gender.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="geographySelect" class="form-label fw-semibold">Geography</label>
+                                <select class="form-select form-select-lg" id="geographySelect" name="geography" required>
+                                    <option value="" selected disabled>Select location...</option>
+                                    <option value="France">France</option>
+                                    <option value="Germany">Germany</option>
+                                    <option value="Spain">Spain</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a location.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Banking Information -->
+                    <div class="glass-card p-4 p-md-5 rounded-4 shadow-sm mb-4 position-relative overflow-hidden">
+                        <div class="glass-card-accent"></div>
+                        <h4 class="fw-bold mb-4 text-dark d-flex align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bank2 text-primary me-2" viewBox="0 0 16 16">
+                              <path d="M8.277.084a.5.5 0 0 0-.554 0l-7.5 5A.5.5 0 0 0 .5 6h1.875v7H1.5a.5.5 0 0 0 0 1h13a.5.5 0 1 0 0-1h-.875V6H15.5a.5.5 0 0 0 .277-.916l-7.5-5zM12.375 6v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zM8 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2zM.5 15a.5.5 0 0 0 0 1h15a.5.5 0 1 0 0-1H.5z"/>
+                            </svg>
+                            Banking Information
+                        </h4>
+                        
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label for="creditScoreInput" class="form-label fw-semibold">Credit Score</label>
+                                <input type="number" class="form-control form-control-lg" id="creditScoreInput" name="credit_score" min="300" max="850" placeholder="e.g. 650" required>
+                                <div class="invalid-feedback">Please enter a valid credit score (300-850).</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="salaryInput" class="form-label fw-semibold">Estimated Salary ($)</label>
+                                <input type="number" class="form-control form-control-lg" id="salaryInput" name="estimated_salary" min="0" placeholder="e.g. 75000" required>
+                                <div class="invalid-feedback">Please enter an estimated salary.</div>
+                            </div>
+                            <div class="col-md-12 mt-4">
+                                <label for="balanceInput" class="form-label fw-semibold">Account Balance: <span id="balanceValue" class="text-primary fw-bold fs-5 ms-2">$50,000</span></label>
+                                <input type="range" class="form-range" min="0" max="250000" step="1000" value="50000" id="balanceInput" name="balance" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Account Information -->
+                    <div class="glass-card p-4 p-md-5 rounded-4 shadow-sm mb-5 position-relative overflow-hidden">
+                        <div class="glass-card-accent"></div>
+                        <h4 class="fw-bold mb-4 text-dark d-flex align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-wallet2 text-primary me-2" viewBox="0 0 16 16">
+                              <path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499L12.136.326zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484L5.562 3zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-13z"/>
+                            </svg>
+                            Account Information
+                        </h4>
+                        
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label for="tenureSelect" class="form-label fw-semibold">Tenure (Years)</label>
+                                <select class="form-select form-select-lg" id="tenureSelect" name="tenure" required>
+                                    <option value="" selected disabled>Select years...</option>
+                                    <option value="0">0 Years (New Customer)</option>
+                                    <option value="1">1 Year</option>
+                                    <option value="2">2 Years</option>
+                                    <option value="3">3 Years</option>
+                                    <option value="4">4 Years</option>
+                                    <option value="5">5 Years</option>
+                                    <option value="6">6 Years</option>
+                                    <option value="7">7 Years</option>
+                                    <option value="8">8 Years</option>
+                                    <option value="9">9 Years</option>
+                                    <option value="10">10+ Years</option>
+                                </select>
+                                <div class="invalid-feedback">Please select tenure.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="productsSelect" class="form-label fw-semibold">Number of Products</label>
+                                <select class="form-select form-select-lg" id="productsSelect" name="num_of_products" required>
+                                    <option value="" selected disabled>Select quantity...</option>
+                                    <option value="1">1 Product</option>
+                                    <option value="2">2 Products</option>
+                                    <option value="3">3 Products</option>
+                                    <option value="4">4 Products</option>
+                                </select>
+                                <div class="invalid-feedback">Please select the number of products.</div>
+                            </div>
+                            <div class="col-md-6 mt-4">
+                                <div class="d-flex justify-content-between align-items-center p-3 border rounded-3 bg-white">
+                                    <label class="form-check-label fw-semibold mb-0" for="activeMemberSwitch">Active Member</label>
+                                    <div class="form-check form-switch mb-0">
+                                        <input class="form-check-input fs-4" type="checkbox" role="switch" id="activeMemberSwitch" name="is_active_member" checked>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-4">
+                                <div class="d-flex justify-content-between align-items-center p-3 border rounded-3 bg-white">
+                                    <label class="form-check-label fw-semibold mb-0" for="creditCardSwitch">Has Credit Card</label>
+                                    <div class="form-check form-switch mb-0">
+                                        <input class="form-check-input fs-4" type="checkbox" role="switch" id="creditCardSwitch" name="has_cr_card" checked>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-gradient btn-lg w-100 rounded-pill fw-semibold py-3 fs-5 btn-hover-elevate shadow-sm">
+                        Predict Churn Risk
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-right-circle ms-2" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+                        </svg>
+                    </button>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
