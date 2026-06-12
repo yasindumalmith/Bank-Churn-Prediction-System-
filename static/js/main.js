@@ -49,4 +49,43 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 300); // Wait for fade out
         });
     }
+
+    // Slider logic for prediction form
+    const ageInput = document.getElementById("ageInput");
+    const ageValue = document.getElementById("ageValue");
+    
+    if (ageInput && ageValue) {
+        ageInput.addEventListener("input", (e) => {
+            ageValue.textContent = e.target.value;
+        });
+    }
+
+    const balanceInput = document.getElementById("balanceInput");
+    const balanceValue = document.getElementById("balanceValue");
+    
+    if (balanceInput && balanceValue) {
+        balanceInput.addEventListener("input", (e) => {
+            // Format as currency
+            const formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                maximumFractionDigits: 0
+            });
+            balanceValue.textContent = formatter.format(e.target.value);
+        });
+    }
+
+    // Bootstrap Form Validation logic
+    const forms = document.querySelectorAll('.needs-validation');
+    
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            form.classList.add('was-validated');
+        }, false);
+    });
 });
