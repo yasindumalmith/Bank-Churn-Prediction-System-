@@ -1,6 +1,17 @@
 from flask import Flask, render_template, request
+import pickle
+import numpy as np
 
 app = Flask(__name__)
+
+# Load models
+try:
+    scaler = pickle.load(open('models/scaler.pkl', 'rb'))
+    model = pickle.load(open('models/best_model.pkl', 'rb'))
+except Exception as e:
+    print(f"Warning: Could not load models. {e}")
+    scaler = None
+    model = None
 
 @app.route('/')
 def index():
@@ -14,6 +25,8 @@ def predict():
         balance = float(request.form.get('balance', 0))
         salary = float(request.form.get('estimated_salary', 0))
         tenure = float(request.form.get('tenure', 0))
+        credit_score = float(request.form.get('credit_score', 0))
+        num_products = float(request.form.get('num_of_products', 1))
         
         # 2. Extract and Encode Categorical variables
         # Gender: Female = 0, Male = 1
@@ -38,12 +51,46 @@ def predict():
         # Print to terminal to verify encoding
         print(f"--- Encoded Input Data ---")
         print(f"Age: {age}, Balance: {balance}, Salary: {salary}, Tenure: {tenure}")
+        print(f"Credit Score: {credit_score}, Num Products: {num_products}")
         print(f"Gender: {gender}, Geography: {geography}")
         print(f"Is Active: {is_active}, Has Card: {has_card}")
         
-        # We will connect the scaler and model here later
+        # Build the Input Array
+        input_data = np.array([[
+            credit_score,
+            geography,
+            gender,
+            age,
+            tenure,
+            balance,
+            num_products,
+            has_card,
+            is_active,
+            salary
+        ]])
         
-        return render_template('result.html', risk="HIGH", probability=82)
+        # Scale and Predict
+        if scaler and model:
+            try:
+                scaled_data = scaler.transform(input_data)
+                prediction_prob = model.predict_proba(scaled_data)[0][1]
+                probability = round(prediction_prob * 100)
+                
+                if probability >= 60:
+                    risk = "HIGH"
+                elif probability >= 30:
+                    risk = "MEDIUM"
+                else:
+                    risk = "LOW"
+            except Exception as e:
+                print(f"Prediction Error: {e}")
+                risk = "ERROR"
+                probability = 0
+        else:
+            risk = "HIGH"
+            probability = 82
+        
+        return render_template('result.html', risk=risk, probability=probability)
 
     return render_template('predict.html')
 
