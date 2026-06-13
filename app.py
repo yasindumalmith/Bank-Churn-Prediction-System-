@@ -1,13 +1,14 @@
-from flask import Flask, render_template, request
-import pickle
+from flask import Flask, render_template, request, redirect, url_for, session
+import joblib
 import numpy as np
 
 app = Flask(__name__)
+app.secret_key = 'bank_churn_secret_key_123'
 
 # Load models
 try:
-    scaler = pickle.load(open('models/scaler.pkl', 'rb'))
-    model = pickle.load(open('models/best_model.pkl', 'rb'))
+    scaler = joblib.load('models/scaler.pkl')
+    model = joblib.load('models/best_model.pkl')
 except Exception as e:
     print(f"Warning: Could not load models. {e}")
     scaler = None
@@ -89,10 +90,35 @@ def predict():
         else:
             risk = "HIGH"
             probability = 82
+            
+        # Get raw geography name for display
+        geo_raw = request.form.get('geography', 'Unknown')
         
-        return render_template('result.html', risk=risk, probability=probability)
+        # Store results in session to pass to the result page
+        session['prediction_result'] = {
+            'risk': risk,
+            'probability': probability,
+            'credit_score': int(credit_score),
+            'geography': geo_raw,
+            'age': int(age),
+            'balance': balance,
+            'num_products': int(num_products)
+        }
+        
+        return redirect(url_for('result'))
 
     return render_template('predict.html')
+
+@app.route('/result')
+def result():
+    # Retrieve the result data from the session
+    result_data = session.get('prediction_result')
+    
+    # If there is no data (user navigated directly to /result), send them back to /predict
+    if not result_data:
+        return redirect(url_for('predict'))
+        
+    return render_template('result.html', **result_data)
 
 if __name__ == '__main__':
     app.run(debug=True)
